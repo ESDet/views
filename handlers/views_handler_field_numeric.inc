@@ -111,17 +111,15 @@ class views_handler_field_numeric extends views_handler_field {
       return '';
     }
     if (!empty($this->options['set_precision'])) {
-      $value = number_format($value, $this->options['precision'], $this->options['decimal'], $this->options['separator']);
+      $precision = $this->options['set_precision'];
+    }
+    elseif ($decimal_position = strpos($value, '.')) {
+      $precision = strlen($value) - $decimal_position - 1;
     }
     else {
-      $remainder = abs($value) - intval(abs($value));
-      $value = $value > 0 ? floor($value) : ceil($value);
-      $value = number_format($value, 0, '', $this->options['separator']);
-      if ($remainder) {
-        // The substr may not be locale safe.
-        $value .= $this->options['decimal'] . substr($remainder, 2);
-      }
+      $precision = 0;
     }
+    $value = number_format($value, $precision, $this->options['decimal'], $this->options['separator']);
 
     // Check to see if hiding should happen before adding prefix and suffix.
     if ($this->options['hide_empty'] && empty($value) && ($value !== 0 || $this->options['empty_zero'])) {
