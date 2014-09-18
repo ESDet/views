@@ -107,6 +107,9 @@ class views_handler_field_numeric extends views_handler_field {
 
   function render($values) {
     $value = $this->get_value($values);
+    if ($value == null) {
+      return '';
+    }
     if (!empty($this->options['set_precision'])) {
       $value = number_format($value, $this->options['precision'], $this->options['decimal'], $this->options['separator']);
     }
